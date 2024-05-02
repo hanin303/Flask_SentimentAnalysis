@@ -1,7 +1,14 @@
+
+# Event Feedback Analysis: 
+# By analyzing the sentiment of feedback for events, Admin Of Elkindy can gauge overall attendee satisfaction and improve future events based on their feedbacks.
+# Sentiment Analysis Using TextBlob: This is a form of natural language processing.
+# TextBlob uses pre-trained models to assess the polarity (sentiment) of text. 
+# While it leverages models that are built using machine learning techniques, 
+# Data Normalization and Aggregation: we normalized data from different scales (ratings out of 5 and 10) and combined them to compute an overall sentiment score.
+
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from textblob import TextBlob
-
 app = Flask(__name__)
 
 # Connect to MongoDB
@@ -56,12 +63,12 @@ def analyze_feedback():
     user_response = {}
     admin_statistics = {}
 
-    # Analyze text fields for sentiment and generate user message
+    # Analyzing text fields for sentiment 
     text_fields = ['bestPart', 'improvements', 'finalComments']
     sentiments = {field: TextBlob(data.get(field, '')).sentiment.polarity for field in text_fields if data.get(field, '')}
     overall_sentiment = sum(sentiments.values()) / len(sentiments) if sentiments else 0
 
-    # Generate user-friendly message
+    # Generate user-friendly message for users
     if overall_sentiment > 0.1:
         user_response['message'] = "Thank you for your positive feedback!"
     elif overall_sentiment < -0.1:
